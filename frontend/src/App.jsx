@@ -24,6 +24,7 @@ const App = () => {
         <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
         <div className="content">
           <Routes>
+            
             <Route path="/" element={<Home />} />
             <Route path="/jobs/:id" element={<JobPage  isAuthenticated={isAuthenticated}/>} />
             <Route path="/add-job" element={isAuthenticated ? <AddJobPage /> : <Navigate to="/login" />} />
