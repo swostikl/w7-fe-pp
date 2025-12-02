@@ -13,15 +13,17 @@ const Login = ({ setIsAuthenticated }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    await login({
+    const user = await login({
       email: email.value,
       password: password.value,
     });
 
-    if (!error) {
+    if (user) {
       console.log("Login success");
       setIsAuthenticated(true); // Update authentication state
       navigate("/");
+    }else {
+      console.log("Login failed",error);
     }
   };
 

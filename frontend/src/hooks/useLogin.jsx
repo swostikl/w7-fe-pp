@@ -8,22 +8,29 @@ export default function useLogin(url) {
     setIsLoading(true);
     setError(null);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(object),
-    });
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(object),
+      });
 
-    const data = await response.json();
+      if (!response.ok) {
+        const data = await response.json();
+        setError(data.error || "Login failed");
+        return null;
+      }
 
-    if (!response.ok) {
-      setError(data.error || "Login failed");
+      const data = await response.json();
+      localStorage.setItem("user", JSON.stringify(data));
+      return data; // Return user data on success
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error("Login error:", err);
+      return null;
+    } finally {
       setIsLoading(false);
-      return false;
     }
-
-    localStorage.setItem("user", JSON.stringify(data));
-    setIsLoading(false);
   };
 
   return { login, isLoading, error };
