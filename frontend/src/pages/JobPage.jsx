@@ -10,15 +10,25 @@ const JobPage = () => {
   const navigate = useNavigate();
 
   const deleteJob = async (id) => {
+    const token = JSON.parse(localStorage.getItem("user"))?.token;
+
     try {
       const response = await fetch(`/api/jobs/${id}`, {
         method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+
       if (!response.ok) {
-        throw new Error("Could not delete a job");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Could not delete the job");
       }
+
+      alert("Job deleted successfully");
     } catch (error) {
-      throw error;
+      console.error("Error deleting job:", error);
+      alert(`Error: ${error.message}`);
     }
   };
 

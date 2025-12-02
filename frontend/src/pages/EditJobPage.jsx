@@ -15,18 +15,27 @@ const EditJobPage = () => {
   const navigate = useNavigate();
 
   const updateJob = async (job) => {
+    const token = JSON.parse(localStorage.getItem("user"))?.token;
+
     try {
       const res = await fetch(`/api/jobs/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(job),
       });
-      if (!res.ok) throw new Error("Failed to update job");
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to update job");
+      }
+
       return res.ok;
     } catch (error) {
       console.error("Error updating job:", error);
+      setError(error.message);
       return false;
     }
   };
@@ -137,7 +146,7 @@ const EditJobPage = () => {
             onChange={(e) => setCompanyContactPhone(e.target.value)}
           />
 
-          <button>Update Job</button>
+          <button onClick={submitForm}>Update Job</button>
         </form>
       )}
     </div>
