@@ -1,4 +1,5 @@
 import JobListing from "./JobListing";
+import { Link } from "react-router-dom";
 
 const JobListings = ({ jobs }) => {
   return (
@@ -7,11 +8,14 @@ const JobListings = ({ jobs }) => {
         <p>No jobs found.</p>
       ) : (
         jobs.map((job) => (
-          <JobListing key={job.id} job={job} />
+          <div key={job.id}>
+            <JobListing job={job} />
+            <Link to={`/jobs/${job.id}`}>View Job</Link>
+          </div>
         ))
       )}
     </div>
   );
 };
-
+ 
 export default JobListings;
