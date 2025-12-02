@@ -11,11 +11,20 @@ const Signup = () => {
   const gender = useField("text");
   const dateOfBirth = useField("date");
   const membershipStatus = useField("text");
+  // New address fields
+  const street = useField("text");
+  const city = useField("text");
+  const zipCode = useField("text");
 
   const { signup, error } = useSignup("/api/users/signup");
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name.value || !email.value || !password.value || !phoneNumber.value || !gender.value || !dateOfBirth.value || !membershipStatus.value || !street.value || !city.value || !zipCode.value) {
+      alert("Please fill out all fields.");
+      return;
+    }
 
     const success = await signup({
       email: email.value,
@@ -25,6 +34,11 @@ const Signup = () => {
       gender: gender.value,
       date_of_birth: dateOfBirth.value,
       membership_status: membershipStatus.value,
+      address: {
+        street: street.value,
+        city: city.value,
+        zipCode: zipCode.value,
+      },
     });
 
     if (success) {
@@ -51,6 +65,13 @@ const Signup = () => {
         <input {...dateOfBirth} />
         <label>Membership Status:</label>
         <input {...membershipStatus} />
+        {/* Address field */}
+        <label>Street:</label>
+        <input {...street} />
+        <label>City:</label>
+        <input {...city} />
+        <label>ZIP Code:</label>
+        <input {...zipCode} />
         <button>Sign up</button>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
