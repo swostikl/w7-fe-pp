@@ -1,60 +1,59 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
+const JobPage = () => {
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-const JobPage = ()=> {
-    const [job, setJob] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const {id} = useParams();
-    const navigate = useNavigate();
+  const deleteJob = async (id) => {
+    try {
+      const response = await fetch(`/api/jobs/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Could not delete a job");
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
 
-
-const deleteJob = async (id)=> {
-        try{
-            const response = await fetch(`/api/jobs/${id}`, {
-                method:"DELETE",
-            });
-            if(!response.ok){
-                throw new Error("Could not delete a job");   
-            }
-        }catch(error){
-            throw error;
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        console.log("Fetching job with id:", id);
+        const response = await fetch(`/api/jobs/${id}`);
+        if (!response.ok) {
+          throw new Error("Could not fetch a job");
         }
+        const data = await response.json();
+        setJob(data);
+      } catch (error) {
+        console.error("Error fetching job:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    useEffect(()=> {
-        const fetchJob = async ()=>{
-            try{
-                console.log("Fetching job with id:", id);
-                const response = await fetch (`/api/jobs/${id}`);
-                if(!response.ok){
-                    throw new Error ("Could not fetch a job");
-                }
-                const data = await response.json();
-                setJob(data);
-            }catch (error){
-                console.error("Error fetching job:", error);
-                setError(error.message);
-            }finally {
-                setLoading(false);
-            }
-        };
+    fetchJob();
+  }, [id]);
 
-        fetchJob();
-    }, [id]);
+  const onClickDelete = (id) => {
+    const confirm = window.confirm(
+      `Are you sure you want to delete job ${id}?`
+    );
+    if (!confirm) return;
 
-    const onClickDelete = (id) => {
-        const confirm = window.confirm(
-            `Are you sure you want to delete job ${id}?`
-        );
-        if(!confirm) return;
-        
-        deleteJob(id);
-        navigate("/")
-    };
+    deleteJob(id);
+    navigate("/");
+  };
 
-    return(
+  return (
     <div className="job-preview">
       {loading ? (
         <p>Loading...</p>
@@ -68,11 +67,13 @@ const deleteJob = async (id)=> {
           <p>Company: {job.company.name}</p>
           <p>Email: {job.company.contactEmail}</p>
           <p>Phone: {job.company.contactPhone}</p>
+
           <button onClick={() => onClickDelete(job._id)}>delete</button>
+          <button onClick={() => navigate(`/edit-job/${job._id}`)}>edit</button>
         </>
       )}
     </div>
-    )};
+  );
+};
 
-    export default JobPage;
-
+export default JobPage;
