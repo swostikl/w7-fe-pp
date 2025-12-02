@@ -2,7 +2,7 @@ import useField from "../hooks/useField";
 import useLogin from "../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   const email = useField("email");
@@ -10,7 +10,7 @@ const Login = () => {
 
   const { login, error } = useLogin("/api/users/login");
 
-  const handleSubmit = async (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     await login({
@@ -20,6 +20,7 @@ const Login = () => {
 
     if (!error) {
       console.log("Login success");
+      setIsAuthenticated(true); // Update authentication state
       navigate("/");
     }
   };
@@ -28,7 +29,7 @@ const Login = () => {
     <div className="create">
       <h2>Log In</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleFormSubmit}>
         <label>Email:</label>
         <input {...email} required />
 
@@ -45,10 +46,4 @@ const Login = () => {
 
 export default Login;
 
-//  Where is the token or auth info stored? Is it secure?
-
-//The authentication information is stored in the browser’s
-//localStorage, which makes it easy to access across pages.
-//However, localStorage is not fully secure because JavaScript can read it,
-//making it vulnerable to XSS attacks. In real-world applications, authentication
-//data is usually stored in HTTP-only cookies for better security.
+// Note: Consider using HTTP-only cookies for storing authentication tokens instead of localStorage for better security.

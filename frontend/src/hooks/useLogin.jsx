@@ -24,7 +24,6 @@ export default function useLogin(url) {
 
     localStorage.setItem("user", JSON.stringify(data));
     setIsLoading(false);
-    return true;
   };
 
   return { login, isLoading, error };
