@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const name = useField("text");  
+  const name = useField("text");
   const email = useField("email");
   const password = useField("password");
   const phoneNumber = useField("text");
@@ -16,7 +16,8 @@ const Signup = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    await signup({
+
+    const success = await signup({
       email: email.value,
       password: password.value,
       name: name.value,
@@ -25,7 +26,8 @@ const Signup = () => {
       date_of_birth: dateOfBirth.value,
       membership_status: membershipStatus.value,
     });
-    if (!error) {
+
+    if (success) {
       console.log("success");
       navigate("/");
     }
@@ -50,6 +52,8 @@ const Signup = () => {
         <label>Membership Status:</label>
         <input {...membershipStatus} />
         <button>Sign up</button>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </div>
   );
