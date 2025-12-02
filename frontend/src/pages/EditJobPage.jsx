@@ -8,7 +8,7 @@ const EditJobPage = () => {
   const [companyName, setCompanyName] = useState("");
   const [companyContactEmail, setCompanyContactEmail] = useState("");
   const [companyContactPhone, setCompanyContactPhone] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const { id } = useParams();
@@ -16,7 +16,7 @@ const EditJobPage = () => {
 
   const updateJob = async (job) => {
     try {
-      const res = await fetch(`/api/jobs/${job.id}`, {
+      const res = await fetch(`/api/jobs/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -33,6 +33,8 @@ const EditJobPage = () => {
 
   useEffect(() => {
     const fetchJob = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const res = await fetch(`/api/jobs/${id}`);
         if (!res.ok) {
